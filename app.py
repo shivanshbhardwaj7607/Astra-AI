@@ -2,94 +2,66 @@ import streamlit as st
 import time
 
 # --- 1. PAGE CONFIGURATION ---
-st.set_page_config(
-    page_title="ASTRA-AI: Pragyan Public School",
-    page_icon="🎓",
-    layout="centered"
-)
+st.set_page_config(page_title="ASTRA-AI PRO", page_icon="🚀")
 
-# --- 2. LOVELY 3D GLASSMORPHISM UI ---
+# --- 2. LOVELY UI STYLE ---
 st.markdown("""
     <style>
-    .stApp {
-        background: linear-gradient(135deg, #000428, #004e92);
-        color: white;
-        font-family: 'Segoe UI', sans-serif;
-    }
-    .stChatMessage {
-        background: rgba(255, 255, 255, 0.07);
-        border-radius: 20px;
-        border: 1px solid rgba(0, 210, 255, 0.3);
-        margin-bottom: 15px;
-    }
-    h1 { text-shadow: 2px 2px 4px #000000; color: #00d2ff !important; text-align: center; }
+    .stApp { background: linear-gradient(135deg, #000428, #004e92); color: white; }
+    .stChatMessage { background: rgba(255, 255, 255, 0.08); border-radius: 20px; border: 1px solid #00d2ff; margin-bottom: 10px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. THE COMPLETE SCHOOL BRAIN (DATABASE) ---
-school_data = {
+# --- 3. THE COMPLETE KNOWLEDGE BRAIN ---
+data = {
     "name": "Pragyan Public School, Jewar",
-    "location": "Jewar, Gautam Budh Nagar, Uttar Pradesh - 203135",
     "principal": "Mrs. Deepti Sharma (M.Sc., M.Ed., M.C.A., M.Phil.)",
-    "timings": "Summer: 7:50 AM to 2:10 PM | Winter: 8:20 AM to 2:20 PM",
-    "fees_2025": "Admission Fee: ₹5500-₹6500. Annual Composite Fee starts at ₹29,800. For XII Science, it's approx ₹43,600+.",
-    "mobile_policy": "Strictly prohibited. Confiscated phones require a ₹1000 fine for early return.",
-    "results": "Excellent CBSE Results! The school consistently achieves 100% pass results. Many students score 95%+, with toppers consistently securing admissions in top Indian universities and professional colleges.",
-    "achievements": "Ranked No. 1 School Leaders in Greater Noida (TimesNow 2024). Awarded the prestigious British Council International School Award.",
+    "timings": "Summer: 7:50 AM - 2:10 PM | Winter: 8:20 AM - 2:20 PM",
+    "fees": "Admission Fee: ₹5500-₹6500. Annual Fee starts at ₹29,800.",
+    "mobile": "Strictly prohibited. If caught, a ₹1000 fine is charged for early return.",
+    "results": "Excellent CBSE Results! The school consistently achieves 100% pass results with many students scoring 95%+ every year.",
     "motto": "Empowering every child. Dare to dream, Learn to excel."
 }
 
-# --- 4. CHATBOT INTERFACE ---
-st.markdown("<h1>🚀 ASTRA-AI PRO</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center;'>Intelligence for <b>{school_data['name']}</b></p>", unsafe_allow_html=True)
-st.divider()
+st.title("🚀 ASTRA-AI PRO")
+st.write(f"Official Intelligence for **{data['name']}**")
 
 if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "assistant", "content": "Hello! I am Astra-AI. I know about the results, fees, timings, and rules of Pragyan Public School. How can I help?"}
-    ]
+    st.session_state.messages = []
 
 for m in st.session_state.messages:
     with st.chat_message(m["role"]): st.markdown(m["content"])
 
-if prompt := st.chat_input("Ask about past results, fees, etc..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"): st.markdown(prompt)
-
+if p := st.chat_input("Ask me about board results, fees, etc..."):
+    st.session_state.messages.append({"role": "user", "content": p})
+    with st.chat_message("user"): st.markdown(p)
+    
     with st.chat_message("assistant"):
-        query = prompt.lower()
-        
-        # LOGIC ENGINE
-        if any(word in query for word in ["result", "pass", "percent", "score", "topper", "board"]):
-            response = f"**Academic Results:** {school_data['results']}"
-        
-        elif any(word in query for word in ["name", "which school"]):
-            response = f"This is the official bot for **{school_data['name']}**."
-        
-        elif any(word in query for word in ["principal", "deepti"]):
-            response = f"The Principal is **{school_data['principal']}**."
-        
-        elif any(word in query for word in ["fee", "cost", "money"]):
-            response = f"**Fee Structure (2025-26):** {school_data['fees_2025']}"
-        
-        elif any(word in query for word in ["time", "timing", "hours"]):
-            response = f"School Timings: {school_data['timings']}"
-        
-        elif any(word in query for word in ["mobile", "phone", "fine"]):
-            response = f"**Mobile Policy:** {school_data['mobile_policy']}"
-            
-        elif any(word in query for word in ["hi", "hello"]):
-            response = "Greetings! I am Astra-AI. How can I help you today?"
-
+        q = p.lower()
+        # ULTIMATE LOGIC
+        if any(x in q for x in ["result", "pass", "score", "topper"]):
+            ans = f"**Board Results:** {data['results']}"
+        elif any(x in q for x in ["name", "which school"]):
+            ans = f"This is the official AI assistant for **{data['name']}**."
+        elif "principal" in q or "deepti" in q:
+            ans = f"The Principal is **{data['principal']}**."
+        elif "fee" in q or "cost" in q:
+            ans = f"**Fee Structure:** {data['fees']}"
+        elif "time" in q or "timing" in q:
+            ans = f"School Timings: {data['timings']}"
+        elif "mobile" in q or "phone" in q:
+            ans = f"**Mobile Policy:** {data['mobile']}"
+        elif "hi" in q or "hello" in q:
+            ans = "Hello! I am Astra-AI. I know about PPS results, fees, and rules. Ask me anything!"
         else:
-            response = "I have information on CBSE results, fees, principal, and school rules. Ask me: 'Tell me about the board results'!"
-
-        # Typing Animation
-        full_res = ""
+            ans = "I have info on CBSE results, fees, principal, and rules. Try: 'What are the board results?'"
+        
+        # Typing animation
+        res = ""
         placeholder = st.empty()
-        for word in response.split():
-            full_res += word + " "
+        for word in ans.split():
+            res += word + " "
             time.sleep(0.06)
-            placeholder.markdown(full_res)
+            placeholder.markdown(res)
             
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.session_state.messages.append({"role": "assistant", "content": ans})
